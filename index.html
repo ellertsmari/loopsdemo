@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Loops in TypeScript - Step by Step</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f8fafc;
+      color: #11161a;
+    }
+
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    header {
+      margin-bottom: 2.5rem;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.75rem;
+      margin: 0 0 .5rem;
+      letter-spacing: -.02em;
+    }
+
+    header p {
+      margin: 0;
+      max-width: 640px;
+      margin-inline: auto;
+      color: #4a5565;
+      font-size: 1.1rem;
+    }
+
+    section.lesson {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 2rem 1.75rem;
+      margin-top: 1.9rem;
+      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    section.lesson h2 {
+      margin: 0 0 1rem;
+      font-size: 1.75rem;
+      color: #0f172a;
+    }
+
+    section.lesson p {
+      margin: .45rem 0;
+      color: #243141;
+    }
+
+    .pill-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: .75rem;
+      margin: 1.1rem 0 1.3rem;
+    }
+
+    .pill {
+      border: 1px solid rgba(15, 118, 110, 0.25);
+      border-radius: 999px;
+      padding: .6rem 1rem;
+      background: rgba(236, 253, 245, 0.7);
+      color: #0f766e;
+      font-weight: 600;
+      font-size: .95rem;
+      text-align: center;
+    }
+
+    .code-block {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 16px;
+      padding: 1.3rem 1.6rem;
+      margin: 1rem 0;
+      font-family: "JetBrains Mono", "Fira Code", "Menlo", monospace;
+      font-size: 1rem;
+      position: relative;
+    }
+
+    .code-block button {
+      position: absolute;
+      top: .9rem;
+      right: .95rem;
+      font-size: .8rem;
+      padding: .45rem .85rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: #22c55e;
+      color: #052e16;
+      font-weight: 600;
+    }
+
+    .code-block button:hover,
+    .code-block button:focus {
+      background: #16a34a;
+      color: #ecfccb;
+    }
+
+    pre {
+      margin: 0;
+      overflow-x: auto;
+    }
+
+    code {
+      display: block;
+      white-space: pre;
+    }
+
+    .highlight {
+      display: inline-block;
+      border-radius: 6px;
+      padding: .18rem .4rem;
+      margin: 0 -.15rem;
+      background: rgba(251, 191, 36, 0.35);
+      color: #fef9c3;
+      transition: transform 0.18s ease, background 0.18s ease;
+    }
+
+    .highlight.active {
+      background: rgba(251, 191, 36, 0.75);
+      transform: scale(1.04);
+    }
+
+    .highlight[contenteditable="true"] {
+      cursor: text;
+      min-width: 1.5rem;
+    }
+
+    .highlight[contenteditable="true"]:focus {
+      outline: 2px solid rgba(59, 130, 246, 0.9);
+      outline-offset: 1px;
+      background: rgba(56, 189, 248, 0.35);
+      color: #e0f2fe;
+    }
+
+    .explain-list {
+      display: grid;
+      gap: .8rem;
+      margin-top: 1rem;
+    }
+
+    .explain-item {
+      border-left: 4px solid #6366f1;
+      background: rgba(199, 210, 254, 0.35);
+      padding: .65rem .9rem;
+      border-radius: 12px;
+      color: #1e1b4b;
+    }
+
+    .explain-item.active {
+      border-left-color: #0f766e;
+      background: rgba(222, 252, 241, 0.9);
+      color: #064e3b;
+    }
+
+    .playground {
+      margin-top: 1.6rem;
+      background: rgba(15, 23, 42, 0.06);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      border-radius: 14px;
+      padding: 1.1rem 1.2rem 1.25rem;
+    }
+
+    .playground h3 {
+      margin: 0 0 .8rem;
+      font-size: 1.15rem;
+      color: #0f172a;
+    }
+
+    .results-grid {
+      display: grid;
+      gap: 1rem;
+      margin-top: .5rem;
+    }
+
+    @media (min-width: 720px) {
+      .results-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+      }
+      .results-grid .wide {
+        grid-column: 1 / -1;
+      }
+    }
+
+    .status-card h4 {
+      margin: 0 0 .45rem;
+      font-size: .95rem;
+      letter-spacing: .01em;
+      text-transform: uppercase;
+      color: #1f2937;
+    }
+
+    .counter-display {
+      background: rgba(15, 118, 110, 0.12);
+      border: 1px solid rgba(15, 118, 110, 0.4);
+      border-radius: 12px;
+      padding: .75rem 1rem;
+      font-family: "JetBrains Mono", "Fira Code", "Menlo", monospace;
+      font-size: 1rem;
+      color: #0f172a;
+    }
+
+    .control-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .7rem;
+      margin-bottom: .9rem;
+    }
+
+    button.primary,
+    button.secondary {
+      font: inherit;
+      font-weight: 600;
+      padding: .55rem .95rem;
+      border-radius: 10px;
+      cursor: pointer;
+      border: none;
+    }
+
+    button.primary {
+      background: #4f46e5;
+      color: #f8fafc;
+    }
+
+    button.primary:hover,
+    button.primary:focus {
+      background: #4338ca;
+    }
+
+    button.secondary {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    button.secondary:hover,
+    button.secondary:focus {
+      background: #cbd5f5;
+    }
+
+    .results-card {
+      background: rgba(15, 23, 42, 0.92);
+      border-radius: 14px;
+      color: #f1f5f9;
+      padding: 1rem 1.2rem;
+      min-height: 150px;
+      font-family: "JetBrains Mono", "Fira Code", "Menlo", monospace;
+      font-size: .95rem;
+      white-space: pre-wrap;
+    }
+
+    .results-card.console {
+      min-height: 120px;
+    }
+
+    .results-card.trace {
+      background: rgba(30, 41, 59, 0.92);
+      min-height: 160px;
+    }
+
+    .practice-list {
+      counter-reset: challenge;
+      display: grid;
+      gap: 1rem;
+    }
+
+    details {
+      background: rgba(226, 232, 240, 0.45);
+      border-radius: 12px;
+      padding: .9rem 1rem;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    details > summary {
+      cursor: pointer;
+      font-weight: 600;
+      list-style: none;
+    }
+
+    details[open] > summary {
+      color: #4c1d95;
+    }
+
+    details > summary::before {
+      counter-increment: challenge;
+      content: "Challenge " counter(challenge) ": ";
+      color: #1d4ed8;
+    }
+
+    .answer {
+      margin-top: .75rem;
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 10px;
+      padding: .75rem .85rem;
+      font-family: "JetBrains Mono", "Fira Code", "Menlo", monospace;
+      font-size: .9rem;
+      white-space: pre;
+    }
+
+    footer {
+      margin-top: 2.5rem;
+      text-align: center;
+      font-size: .95rem;
+      color: #64748b;
+    }
+
+    @media (max-width: 600px) {
+      .code-block {
+        font-size: .95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Loops in TypeScript</h1>
+      <p>Every loop answers three questions: where do we start, when do we stop, and how do we move? Edit the highlighted code, run it, and watch the computer repeat work step by step.</p>
+    </header>
+
+    <section class="lesson" data-lesson="for">
+      <h2>for loop: one sentence</h2>
+      <p>A <code>for</code> loop packs the three questions into one line: start the counter, keep looping while the condition is true, and move the counter each time.</p>
+      <div class="pill-list">
+        <div class="pill">Start the counter</div>
+        <div class="pill">Check the condition</div>
+        <div class="pill">Move forward</div>
+      </div>
+      <p>Change the highlighted parts to customise the loop. Keep the structure, but try different numbers or a different message.</p>
+
+      <div class="code-block" aria-live="polite">
+        <button id="playFor">Animate</button>
+<pre><code>for (<span class="highlight" data-lesson="for" data-part="start" contenteditable="true" spellcheck="false">let i = 1</span>; <span class="highlight" data-lesson="for" data-part="condition" contenteditable="true" spellcheck="false">i &lt;= 5</span>; <span class="highlight" data-lesson="for" data-part="step" contenteditable="true" spellcheck="false">i = i + 1</span>) {
+  <span class="highlight" data-lesson="for" data-part="body" contenteditable="true" spellcheck="false">console.log("Looping is learning", i);</span>
+}</code></pre>
+      </div>
+
+      <div class="explain-list" id="forExplain" aria-live="polite"></div>
+
+      <div class="playground">
+        <h3>Try the code</h3>
+        <p>Edit the code above, then run it to see each iteration. "Start stepping" gets the loop ready and "Next step" moves through one part at a time.</p>
+        <div class="control-row">
+          <button id="runFor" class="primary">Run loop</button>
+          <button id="stepFor" class="secondary">Start stepping</button>
+          <button id="nextFor" class="secondary" disabled>Next step</button>
+          <button id="resetFor" class="secondary">Reset example</button>
+        </div>
+        <div class="results-grid" aria-live="polite">
+          <div class="status-card">
+            <h4>Counter</h4>
+            <div class="counter-display" id="forCounter">Counter not started</div>
+          </div>
+          <div class="status-card">
+            <h4>Console output</h4>
+            <div class="results-card console" id="forConsole">Console output will appear here.</div>
+          </div>
+          <div class="status-card wide">
+            <h4>Loop trace</h4>
+            <div class="results-card trace" id="forTrace">Trace will explain each part of the loop.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="lesson" data-lesson="while">
+      <h2>while loop: check first</h2>
+      <p>A <code>while</code> loop separates the parts: set up before the loop, check at the top, repeat the body, then move the counter inside.</p>
+      <p>Edit the highlighted lines to mirror the story and see how the logic stays the same.</p>
+
+      <div class="code-block" aria-live="polite">
+        <button id="playWhile">Animate</button>
+<pre><code><span class="highlight" data-lesson="while" data-part="start" contenteditable="true" spellcheck="false">let i = 1;</span>
+while (<span class="highlight" data-lesson="while" data-part="condition" contenteditable="true" spellcheck="false">i &lt;= 5</span>) {
+  <span class="highlight" data-lesson="while" data-part="body" contenteditable="true" spellcheck="false">console.log("Looping is learning", i);</span>
+  <span class="highlight" data-lesson="while" data-part="step" contenteditable="true" spellcheck="false">i = i + 1;</span>
+}</code></pre>
+      </div>
+
+      <div class="explain-list" id="whileExplain" aria-live="polite"></div>
+
+      <div class="playground">
+        <h3>Try the code</h3>
+        <p>Match the counter setup, condition, and update to keep the loop healthy. Use "Start stepping" and "Next step" to narrate each part.</p>
+        <div class="control-row">
+          <button id="runWhile" class="primary">Run loop</button>
+          <button id="stepWhile" class="secondary">Start stepping</button>
+          <button id="nextWhile" class="secondary" disabled>Next step</button>
+          <button id="resetWhile" class="secondary">Reset example</button>
+        </div>
+        <div class="results-grid" aria-live="polite">
+          <div class="status-card">
+            <h4>Counter</h4>
+            <div class="counter-display" id="whileCounter">Counter not started</div>
+          </div>
+          <div class="status-card">
+            <h4>Console output</h4>
+            <div class="results-card console" id="whileConsole">Console output will appear here.</div>
+          </div>
+          <div class="status-card wide">
+            <h4>Loop trace</h4>
+            <div class="results-card trace" id="whileTrace">Trace will explain each part of the loop.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="lesson" data-lesson="foreach">
+      <h2>forEach: trust the array</h2>
+      <p><code>Array.prototype.forEach</code> handles the counting for you. Choose the array, then describe what should happen for every item.</p>
+      <p>Edit the array or the callback to see different sequences.</p>
+
+      <div class="code-block" aria-live="polite">
+        <button id="playForEach">Animate</button>
+<pre><code><span class="highlight" data-lesson="foreach" data-part="start" contenteditable="true" spellcheck="false">const values = [2, 4, 6];</span>
+<span class="highlight" data-lesson="foreach" data-part="condition" contenteditable="true" spellcheck="false">values.forEach((value, index) => {</span>
+  <span class="highlight" data-lesson="foreach" data-part="body" contenteditable="true" spellcheck="false">console.log("Value", index, value);</span>
+  <span class="highlight" data-lesson="foreach" data-part="step" contenteditable="true" spellcheck="false">// forEach moves to the next item automatically</span>
+});</code></pre>
+      </div>
+
+      <div class="explain-list" id="forEachExplain" aria-live="polite"></div>
+
+      <div class="playground">
+        <h3>Try the code</h3>
+        <p>Adjust the array values or how you log them. forEach calls your function once per item—step through to see each callback in order.</p>
+        <div class="control-row">
+          <button id="runForEach" class="primary">Run loop</button>
+          <button id="stepForEach" class="secondary">Start stepping</button>
+          <button id="nextForEach" class="secondary" disabled>Next step</button>
+          <button id="resetForEach" class="secondary">Reset example</button>
+        </div>
+        <div class="results-grid" aria-live="polite">
+          <div class="status-card">
+            <h4>Current item</h4>
+            <div class="counter-display" id="forEachCounter">index = -- (value --)</div>
+          </div>
+          <div class="status-card">
+            <h4>Console output</h4>
+            <div class="results-card console" id="forEachConsole">Console output will appear here.</div>
+          </div>
+          <div class="status-card wide">
+            <h4>Loop trace</h4>
+            <div class="results-card trace" id="forEachTrace">Trace will explain each part of the loop.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="lesson">
+      <h2>Try these mini challenges</h2>
+      <p>Say the loop sentence out loud before you look at the answer. Focus on the three decisions each time.</p>
+      <div class="practice-list">
+        <details>
+          <summary>Print the numbers 1 through 4 on separate lines.</summary>
+          <div class="answer">
+for (let i = 1; i &lt;= 4; i = i + 1) {
+  console.log(i);
+}
+          </div>
+        </details>
+        <details>
+          <summary>Count down from 5 to 1 and then show "Blast off!".</summary>
+          <div class="answer">
+for (let i = 5; i &gt;= 1; i = i - 1) {
+  console.log(i);
+}
+console.log("Blast off!");
+          </div>
+        </details>
+        <details>
+          <summary>Add up the first 3 multiples of 5 (5, 10, 15).</summary>
+          <div class="answer">
+let total = 0;
+for (let i = 1; i &lt;= 3; i = i + 1) {
+  total = total + 5 * i;
+}
+console.log("Total:", total);
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <footer>Once the three questions are clear, every loop becomes a small variation. Keep rewriting the sentence for your own exercises.</footer>
+  </main>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>
